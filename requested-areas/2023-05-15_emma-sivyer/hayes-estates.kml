@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="1-lzl4MvEZ9MR9phAjADnc3CKUJHcGQE0">
+	<name>Hayes Estates</name>
+	<gx:CascadingStyle kml:id="__managed_style_17274D05E42955492BE7">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4.8</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_00E3C62EBB2955492BE7">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3.2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0F6B5BAE9A2955492BE6">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_00E3C62EBB2955492BE7</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_17274D05E42955492BE7</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0DD3F24B5D2940FCFA3B">
+		<name>Townfield Estate</name>
+		<LookAt>
+			<longitude>-0.4103373979537739</longitude>
+			<latitude>51.51924604600943</latitude>
+			<altitude>38.93914687524589</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>6579.326115553267</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F6B5BAE9A2955492BE6</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-0.4187143807663529,51.50717650638033,24.73937640743748 -0.4175233030825909,51.50746465869994,24.04346559150425 -0.4167553506744559,51.50799300425725,24.04157216384327 -0.4159658638920571,51.50869929290543,25.57701976278808 -0.4153195595825565,51.50946612583697,25.50590624649091 -0.4143498171970839,51.51025856484114,26.12366115620178 -0.4134814585812008,51.510950161747,26.92542238356484 -0.4126736549025423,51.51191770217666,26.42336637601605 -0.4089171675072567,51.51631571466966,27.11268234160606 -0.4078855750251797,51.51784361192954,25.66560542462313 -0.4173383194799452,51.52116993424899,33.51887591427569 -0.4188738744397014,51.51883002260143,31.81016937156443 -0.4187765717489567,51.51787513306117,30.36932918102407 -0.4188774096258652,51.51691976615994,28.81040625864685 -0.4197684227935128,51.51605706187901,28.7776444729737 -0.4200158513700403,51.51525601342328,28.73966062590964 -0.4202631763395648,51.51420851134049,28.73814963288205 -0.4200649299661674,51.51303780359518,28.73445987902615 -0.4201142341307584,51.51202111947206,28.73434423717817 -0.4203148510852572,51.51109456306715,26.8932091461986 -0.4207622195464433,51.5099833579709,25.66450422269964 -0.4210096403372987,51.50899697710441,25.66532786777806 -0.4207123817127534,51.5083805249964,25.66261355643233 -0.4198704195293002,51.50801072445026,25.66320371945119 -0.4187143807663529,51.50717650638033,24.73937640743748 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="096C3571D02940FE2444">
+		<name>Red Brick Estate</name>
+		<LookAt>
+			<longitude>-0.4164708337896239</longitude>
+			<latitude>51.50519052378858</latitude>
+			<altitude>25.00526101261858</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>2230.461415277969</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0F6B5BAE9A2955492BE6</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-0.4193433952343151,51.5049142056131,25.50278996987602 -0.4187240075158205,51.50476819283148,25.15056259394401 -0.41892691623169,51.50447566915394,23.42448228600309 -0.417954708982774,51.5041311866521,23.15932976702676 -0.4174846654905351,51.50471591958716,24.44672396389695 -0.4173001850652291,51.50498715811538,24.84563645153079 -0.4166132871004913,51.50477846969762,24.22192126879667 -0.4154065177096355,51.50641632765831,24.07750582322802 -0.4170155650646512,51.50690664716483,24.08950413249699 -0.4185236021446226,51.50518529038361,24.49456552661547 -0.4191096666111394,51.50534170983688,24.87654300080578 -0.4193433952343151,51.5049142056131,25.50278996987602 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>

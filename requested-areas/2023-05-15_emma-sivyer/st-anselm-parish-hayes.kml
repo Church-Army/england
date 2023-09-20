@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Parish of St Anselm, Hayes</name>
+	<gx:CascadingStyle kml:id="__managed_style_17D84DB54429554D8F09">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3.2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_040C30094A29554D8F0A">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4.8</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0DCB1CBE1F29554D8F09">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_17D84DB54429554D8F09</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_040C30094A29554D8F0A</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0DF2C9DF3829554D8EFB">
+		<name>Parish of St. Anselm</name>
+		<LookAt>
+			<longitude>-0.4122465858087732</longitude>
+			<latitude>51.508389739981</latitude>
+			<altitude>29.08331902663421</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>30.00000000000002</gx:fovy>
+			<range>19949.90393164102</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0DCB1CBE1F29554D8F09</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-0.4334866905800361,51.51201941503569,34.70722173521976 -0.4331431569889321,51.50984515903609,29.55421366287736 -0.4319601858166022,51.50758099900342,24.07683849962692 -0.4306267234241667,51.50510238574071,28.56730689018968 -0.4292983118992155,51.50357950160051,28.57080928659703 -0.4269914102852101,51.50262229906139,28.5626619897842 -0.4233564687432767,51.50109937813088,28.56072809044718 -0.4200013282379134,51.49983741837921,28.57207690775811 -0.4149656294402726,51.49822246620954,25.49697270365936 -0.4129128409769589,51.49811388071286,23.03475024120043 -0.4122917246357594,51.49721151801569,22.41376965728471 -0.4106371296909039,51.49699670528913,22.40963039182698 -0.4093980964713695,51.49738473649676,23.58731860257013 -0.4044499524449419,51.51006626992321,22.51493178670127 -0.4020405868986476,51.51507553472207,23.57940177603042 -0.4025664566861431,51.51653370215448,28.05580079650779 -0.4045437754348391,51.51772801213495,34.01381357518283 -0.406177951169262,51.51784441723222,33.32891041853811 -0.4079436886730836,51.51729079990736,26.68987981787392 -0.4126360799125728,51.51185173684621,25.65950299499697 -0.4137915975032946,51.51226407941293,26.02585243931966 -0.4147261464698482,51.51121768395043,26.39220188364237 -0.4170644551698155,51.51183029008445,27.12490077228778 -0.4198604684036666,51.51265414234432,28.59029854957861 -0.4201936980644216,51.51170355950511,28.5842181134911 -0.4229952368628387,51.51212629146536,28.57309157493175 -0.4253703214747018,51.51260438792987,28.56196503637239 -0.4268432086886054,51.51294209523881,28.5623135279321 -0.4277734632876273,51.51318330591315,28.56321857753796 -0.4291680838812961,51.51409973376764,30.77931930635875 -0.4307160504540097,51.5145332837747,34.71931883928892 -0.4331951275427826,51.5148224197775,34.72878236033787 -0.4366811715386432,51.51429183225885,34.74042857493765 -0.4334866905800361,51.51201941503569,34.70722173521976 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>

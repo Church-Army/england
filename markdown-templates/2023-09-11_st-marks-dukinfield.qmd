@@ -1,0 +1,340 @@
+---
+title: "Area description: St Marks Dukinfield, Diocese of Chester"
+author: "Dave Lovell (Church Army's Research Unit)"
+format:
+  docx: 
+    reference-doc: "ca-template.docx" 
+editor: visual
+echo: false
+message: false
+params:
+  file: "2023-09-11_st-marks-dukinfield.RDS"
+  diocese: "Chester"
+  nation: "England"
+---
+
+```{r libraries}
+#| include: false
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(knitr)
+library(ggmap)
+library(magrittr)
+library(carutools)
+library(here)
+library(vroom)
+
+plots_tables <- readRDS(here("plots-and-tables", params[["file"]]))
+
+plots <- plots_tables[["plots"]]
+tables <- plots_tables[["tables"]]
+rm(plots_tables)
+```
+
+# Introduction
+
+This report explores the statistical profile the parish of **St Marks Dukinfield** in the diocese of `r params[["diocese"]]` (plotted in Figure 1).
+
+In this report, the statistical profile of the parish will be compared to that of the wider diocese (`r params[["diocese"]]`) and to `r params[["nation"]]` as a whole.
+
+```{r areaMap}
+#| fig-width: 6
+#| cache: true
+#| include: false
+
+shapes <- read_sf(here("geospatial-reporting-data", 
+                       "st-marks-dukinfield_2023-09-11",
+                       "st-marks-dukinfield.geojson"))
+
+shapes <- st_transform(shapes, 4326)
+
+basemap <- get_map(
+  st_bbox(shapes) |> 
+    set_names(c("left", "bottom", "right", "top")),
+  maptype = "satellite",
+  zoom = 14)
+```
+
+```{r makeMapPlot}
+#| include: false
+areas_map <- 
+  ggmap(basemap) + 
+    geom_sf(data = shapes,
+          aes(geometry = geometry, fill = parish_name),
+          size = 1, alpha = 0.2, colour = "black",
+          inherit.aes = FALSE) + 
+    ca_scale_fill_discrete(name = "Geography") +
+    xlab(NULL) + ylab(NULL) + 
+    theme(
+      legend.position = "bottom",
+      axis.line = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()) + 
+    labs(title = "Geographies analysed", caption = "(C) Google 2023")
+```
+
+```{r}
+#| fig-width: 7
+#| fig-cap: "Figure 1: Geographies described in this report"
+areas_map
+```
+
+The domains of statistical data covered by this report are:
+
+-   Ethnicity
+
+-   Age
+
+-   Religion
+
+-   General health
+
+-   Household composition
+
+-   Deprivation
+
+All the data in this report were calculated using the results of the Office for National Statistic's (ONS) 2021 Census of England and Wales. These data are available for output areas, which are the smallest statistical geography used by ONS. The statistics in this report were calculated by spatially joining the geographies of the respective estates and the parish with the output areas they intersect.
+
+# Findings
+
+## Overview of Findings
+
+## Ethnicity
+
+Figure 2 shows the variation in ethnicity across all geographies, and Table 1 provides a tabluation of this data.
+
+```{r ethnicityPlot}
+#| fig-width: 7
+#| fig-cap: "Figure 2: Ethnicity across geographies"
+plots[["ethnicity"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r ethnicityTable}
+#| tbl-cap: "Table 1: Ethnicity across geogrpahies"
+tables[["ethnicity"]] |> 
+  kable()
+```
+
+## Age
+
+Figure 3 shows the breakdown of ages across all geographies, in fifteen-year intervals. This data is also tabulated in Table 2. Appendix 1 is a table that shows how ages vary across each geography in 5 year intervals.
+
+```{r agePlot}
+#| fig-width: 7
+#| fig-cap: "Figure 3: Population ages in each geography"
+
+plots[["age"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r ageTable}
+#| tbl-cap: "Table 2: Population ages in each geography"
+tables[["age"]] |> 
+  kable()
+```
+
+## General Health
+
+Figure 4 shows the self-reported general health of residents across all geographies. These data area also available in Table 3.
+
+```{r generalHealthBar}
+#| fig-width: 7
+#| fig-cap: "Figure 4: General health in each geography"
+
+plots[["general_health"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r generalHealthTable}
+#| tbl-cap: "Table 3: General health across geographies"
+tables[["general_health"]] |> 
+  kable()
+```
+
+## Religion
+
+```{r religionBar}
+#| fig-width: 7
+#| fig-cap: "Figure 5 - Religion across geographies"
+plots[["religion"]]+ 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r religionTable}
+#| tbl-cap: "Table 4: Religion across geographies"
+tables[["religion"]] |> 
+  kable()
+```
+
+## Household composition
+
+The subsequent sections describe the composition of households across the both parishes. A complete table of household composition data is available in index 2.
+
+### Lone occupants and single parents
+
+Figure 6 shows the representation of lone-occupant and single-parent households across all geographies. Table 5 tabulates these figures.
+
+```{r lonersBar}
+#| fig-cap: "Figure 6: Lone-occupant and single-parent households"
+#| fig-width: 7
+plots[["household_composition"]][["loners"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r lonersTable}
+#| tbl-cap: "Table 5: Lone-occupant and single-parent households"
+tables[["household_composition"]][["loners"]] |> 
+  kable()
+```
+
+### Couples (married or cohabiting)
+
+Figure 7 shows the representation of households consisting of married or co-habiting couples across all geographies. These figures are tabulated in more detail in Table 6.
+
+```{r couplesPlots}
+#| fig-cap: "Figure 7: Couples (married or cohabiting)"
+#| fig-width: 7
+plots[["household_composition"]][["couples"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r copulesTable}
+#| tbl-cap: "Table 6: Couples (married or cohabiting)"
+tables[["household_composition"]][["couples"]] |> 
+  kable()
+```
+
+### Other household structures
+
+Figure 8 shows the representation of other households across all geographies. These households are comprised neither of couples (and their children), single-parents or lone-occupants. Table 7 shows these data in more detail.
+
+```{r otherHouseholdsPlot}
+#| fig-cap: "Figure 8: Other households"
+#| fig-width: 7
+plots[["household_composition"]][["others"]] + 
+  labs(caption = "ONS census 2021. Church Army's Research Unit (DL) 2023")
+```
+
+```{r otherHouseholdsTable}
+#| tbl-cap: "Table 7: Other household types"
+tables[["household_composition"]][["others"]] |> 
+  kable()
+```
+
+## Deprivation
+
+Overall deprivation in both parishes is high. Both parishes contain neighborhoods that are classified as being in the 10% most neighborhoods of the UK. Figure 9 shows the intersection of regional deprivation with the parish and the estates.
+
+Deprivation scores are from the 2019 Index of Multiple Deprivation (IMD), which compares and ranks lower-layer super output areas across England and Wales on the basis of multiple weighted indices of deprivation, including income, employment, education and health. For more information on the 2019 IMD, see [this infographic](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/833959/IoD2019_Infographic.pdf).
+
+```{r loadLsoa}
+#| include: false
+#| cache: true
+lsoa <- read_sf(here("civic-areas",
+                     "2011_lsoa-boundaries_england-wales_generalised-clipped"))
+lsoa <-
+  select(lsoa, lsoa_2011_code = LSOA11CD) |> 
+  filter(str_starts(lsoa_2011_code, "E"))
+
+lsoa <- st_transform(lsoa, st_crs(shapes))
+```
+
+```{r loadIMDData}
+#| include: false
+imd <- vroom(here("small-area-stats", "imd_2019.csv"),
+             show_col_types = FALSE) |> 
+  select(lsoa_2011_code = `LSOAcode(2011)`,
+         imd_decile = `IndexofMultipleDeprivation(IMD)Decile`,
+         imd_rank = `IndexofMultipleDeprivation(IMD) Rank`)
+
+imd <- filter(imd, str_starts(lsoa_2011_code, "E"))
+
+imd <- mutate(imd, imd_rank = rank(imd_rank))
+
+imd <- 
+  mutate(imd, 
+         imd_percentile =  ceiling(100 * imd_rank / max(imd_rank)),
+         imd_twentieth = ceiling(imd_percentile/5))
+
+imd <- 
+  mutate(imd,
+         custom_label = 
+           case_when(
+             imd_twentieth == 1 ~ "5% most dep.",
+             imd_twentieth == 2 ~ "10% most dep.",
+             imd_twentieth == 3 ~ "15% most dep.",
+             imd_twentieth == 4 ~ "20% most dep.",
+             TRUE               ~ "other") |>
+           
+           ordered(levels = c("5% most dep.", "10% most dep.",
+                              "15% most dep.", "20% most dep.",
+                              "other")))
+```
+
+```{r findIntersectingOa}
+#| include: false
+intersecting_lsoa <-
+  st_intersects(lsoa, st_union(shapes), sparse = FALSE) |> 
+  as.vector()
+
+lsoa <- 
+  filter(lsoa, intersecting_lsoa) |> 
+  left_join(imd, by = "lsoa_2011_code")
+
+imd_map <-
+  ggmap(basemap) + 
+  geom_sf(data = lsoa,
+          aes(fill = custom_label),
+          colour = "black", linewidth = 0.8,
+          inherit.aes = FALSE,
+          alpha = 0.7) +
+  # geom_sf_text(data = lsoa,
+  #              aes(label = imd_percentile),
+  #              colour = "gray30",
+  #              inherit.aes = FALSE) + 
+  scale_fill_manual(name = "IMD Rank (England)",
+                    values =
+                      colorRampPalette(c(ca_dark_teal(), "white"))(5)[1:4] |>
+                      c(NA),
+                    drop = FALSE,
+                    na.value = NA) + 
+    geom_sf(data = shapes,
+          aes(colour = parish_name),
+          fill = NA, linewidth = 1.2,
+          inherit.aes = FALSE) +
+  scale_colour_manual(values = ca_orange(), name = "Parish") +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank()
+  ) +
+  ggtitle("Deprivation in both parishes") + 
+  labs(caption = "IMD 2019. Church Army's Research Unit (DL) 2023")
+
+```
+
+```{r printMap}
+#| fig-width: 7 
+#| fig-cap: "Deprivation in LLSO that intersect the parish & estates"
+
+imd_map
+```
+
+# Appendices
+
+## Appendix 1: 5-year age table
+
+```{r detailedAgeTale}
+tables[["age_five_year"]] |> 
+  kable()
+```
+
+## Appendix 2: All household composition data
+
+```{r householdCompDataAll}
+tables[["household_composition"]][["all"]] |> 
+  kable()
+```

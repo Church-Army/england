@@ -1,0 +1,377 @@
+---
+title: "St Phillip Upper Stratton: Making graphs"
+author: "Dave"
+format: html
+editor: visual
+---
+
+## Housekeeping
+
+### Libraries
+
+```{r libs}
+library(fs)
+library(here)
+
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(snakecase)
+library(forcats)
+library(scales)
+library(rlang)
+library(tidyr)
+
+library(carutools)
+```
+
+### Files, paths & data
+
+```{r filesEtc}
+abs <- readRDS(
+  here("comparative-tables", "2023-09-11_st-phillip-upper-stratton_population.RDS"))
+rel <- readRDS(
+  here("comparative-tables", "2023-09-11_st-phillip-upper-stratton_proportions.RDS"))
+```
+
+## Plots
+
+### Ethnicity
+
+```{r ethnicityPlot}
+neaten <- function(x, ...){
+  mutate(x, 
+         area = fct_relabel(area, snakecase::to_title_case),
+         ...)
+}
+
+stat_bar <- function(x, x_lab = "statistic",
+                     pop_or_house = "population",
+                     y_lim = c(NA, NA)){
+  ggplot(x, aes(x = statistic, y = proportion, fill = area)) + 
+    geom_col(position = "dodge", colour = "black") + 
+    scale_y_continuous(name = str_c("% ", pop_or_house), 
+                       labels = percent,
+                       limits = y_lim) +
+    xlab(x_lab) + 
+    ca_scale_fill_discrete(name = "Geography") + 
+    theme_minimal()
+}
+
+ethnicity_neat <- 
+  rel[["ethnicity"]] |> 
+  neaten(
+    statistic =
+      word(statistic, sep = "_") |> 
+      str_to_title() |> 
+      ordered() |> 
+      fct_reorder(-proportion))
+
+ethnicity_bar <- 
+  stat_bar(ethnicity_neat, "Ethnicity", y_lim = c(0,1)) +
+  ggtitle("Comparison of population ethnicities")
+```
+
+### Religion
+
+```{r religionBar}
+capitalise <- function(x){
+  str_to_upper(str_sub(x, 1, 1)) |> 
+    str_c(str_sub(x, 2))
+}
+
+religion_neat <- 
+  neaten(rel[["religion"]],
+         statistic =
+           str_replace(statistic, "_", " ") |> 
+           capitalise() |> 
+           ordered() |> 
+           fct_reorder(-proportion) |> 
+           fct_lump_n(w = proportion, 5)) |> 
+  summarise(proportion = sum(proportion), .by = -proportion)
+
+religion_bar <- 
+  stat_bar(religion_neat, "Religion") +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  ggtitle("Comparison of population religions")
+```
+
+### Age
+
+```{r ageBar}
+
+age_neat <- 
+  neaten(rel[["age_five_year"]]) |>
+  group_by(area) |>
+  mutate(sub_group =  ceiling(row_number()/3)) |> 
+  group_by(area, sub_group) |> 
+  summarise(
+    proportion = sum(proportion),
+    numbers = 
+      list(unlist(str_extract_all(statistic, "\\d+")))
+  )
+
+head(age_neat)
+
+age_neat <- 
+  rowwise(age_neat) |> 
+  mutate(
+    statistic =
+      case_when(
+        sub_group == 1 ~ "0-14",
+        sub_group == 6 ~ "75+",
+        TRUE ~ str_c(first(numbers), last(numbers), sep = "-"))
+  )
+
+head(age_neat)
+
+age_neat <- 
+  ungroup(age_neat) |> 
+  select(area, statistic, proportion)
+
+
+age_bar <-
+  stat_bar(age_neat, "Age group") + 
+  ggtitle("Comparison of population ages")
+```
+
+### General health
+
+```{r generalHealthBar}
+health_neat <- 
+  neaten(rel[["general_health"]],
+         statistic =
+           capitalise(statistic) |> 
+           str_replace("_", " ") |> 
+           ordered(levels = c("Very bad", "Bad", "Fair", "Good", "Very good")))
+
+health_neat_labelled <- 
+  health_neat |> 
+  group_by(area) |> 
+  mutate(
+    pc_label = percent(round(proportion, 2)),
+    pc_label = 
+      case_when(
+        proportion <= 0.05 ~ str_remove(pc_label, "%"),
+        TRUE               ~ pc_label),
+    ## Nudge final value to the right
+    nudge_val = 0,
+    nudge_val = {
+      nudge_val[length(nudge_val)] <-  0.05
+      nudge_val})
+
+health_bar <- 
+  ggplot(health_neat_labelled, aes(y = area, x = proportion, fill = statistic)) + 
+  geom_bar(stat = "identity", position = "stack", colour = "black") +
+  geom_text(aes(label = pc_label, x = proportion + nudge_val),
+            position = position_stack(0.5)) + 
+  scale_x_continuous(name = "% population", labels = percent) +
+  scale_y_discrete(name = "Geography") + 
+  ca_scale_fill_brew() + 
+  theme_bw()
+```
+
+### Household composition
+
+```{r householdComposition}
+rel[["household_composition"]][["statistic"]] |> 
+  unique()
+
+household_neat <- 
+  neaten(rel[["household_composition"]])
+
+stat_bar(household_neat) +
+  scale_x_discrete(labels = \(x) word(x, 1, 3, sep = "_")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+household_abbr <- 
+household_neat |> 
+  mutate(statistic =
+           str_replace_all(statistic, "single_family_household", "sfh") |>
+           str_replace("one_person_household", "oph") |> 
+           str_replace("other_household_types", "other") |> 
+           str_replace("married_or_civil_partnership_couple", "mc") |>
+           str_replace("lone_parent_family", "lpf") |> 
+           str_replace("cohabiting_couple_family", "cc") |> 
+           str_replace("other_family_composition", "ofc") |> 
+           str_replace("no_children", "nc") |> 
+           str_replace("with_dependent_children", "dc") |> 
+           str_replace("dependent_children", "dc") |> 
+           str_replace("all_children_non_dependent", "ndc") |>
+           str_replace("aged_66_years_and_over", "66_plus") |> 
+           str_replace("including_all_full_time_students_and_all_66_plus", "other"))
+
+stat_bar(household_abbr) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+living_alone <- 
+  mutate(household_abbr,
+         statistic = case_when(
+           statistic == "oph_66_plus" ~ "Lone occupant (66+)",
+           statistic == "oph_other"   ~ "Lone occupant (<66)",
+           TRUE ~ "Other") |> 
+           ordered(levels = c("Lone occupant (66+)", "Lone occupant (<66)", "Other"))) |> 
+  filter(statistic != "Other") |> 
+  mutate(statistic = fct_drop(statistic)) |> 
+  summarise(proportion = sum(proportion), .by = c(area, statistic))
+
+stat_bar(living_alone)
+
+couples <- 
+  filter(household_abbr,
+         str_starts(statistic, "sfh_cc") |
+           str_starts(statistic, "sfh_mc")) |> 
+  mutate(statistic = case_when(
+           str_ends(statistic, "_dc") ~ "Dependent\nchildren",
+           str_ends(statistic, "_ndc") ~ "All children\nnon-dep.",
+           str_ends(statistic, "_nc") ~ "No children") |> 
+           ordered(levels = c("Dependent\nchildren",
+                              "All children\nnon-dep.", "No children"))) |> 
+  summarise(proportion = sum(proportion), .by = -proportion)
+
+couples_bar <-
+  stat_bar(couples, "Composition", "households") +
+  ggtitle("Couples", sub = "Married or Cohabiting")
+
+loners <- 
+  filter(household_abbr, 
+         statistic %in% c("oph_66_plus", "oph_other",
+                          "sfh_lpf_dc", "sfh_lpf_ndc")) |> 
+  mutate(statistic = case_when(
+    statistic == "oph_66_plus" ~ "Lone occupant\n(aged 66+)",
+    statistic == "oph_other"   ~ "Lone occupant\n(aged <66)",
+    statistic == "sfh_lpf_dc"  ~ "Single parent\n(dep. children)",
+    statistic == "sfh_lpf_ndc" ~ "Single parent\n(all children non. dep.)"
+  ) |> 
+    ordered(levels = c("Lone occupant\n(aged 66+)", "Lone occupant\n(aged <66)",
+                       "Single parent\n(dep. children)",
+                       "Single parent\n(all children non. dep.)")))
+
+loners_bar <- 
+  stat_bar(loners, "Composition", "households") +
+  ggtitle("Lone occupants and single parents")
+
+others <- 
+  filter(household_abbr,
+         statistic %in% c(
+           "other_dc", "other_other_other",
+           "sfh_all_66_plus", "sfh_other_sfh_ofc"
+         )) |> 
+  mutate(statistic = case_when(
+    statistic == "other_dc" ~ "Other households\n(dep. children)",
+    statistic == "other_other_other" ~ "Other",
+    statistic == "sfh_other_sfh_ofc" ~ "Other",
+    statistic == "sfh_all_66_plus" ~ "One family\n(all 66+)") |> 
+      ordered(levels = c("One family\n(all 66+)",
+                         "Other households\n(dep. children)", 
+                         "Other"))) |> 
+  summarise(proportion = sum(proportion), .by = -proportion)
+
+others_bar <- 
+  stat_bar(others, "Composition", "households") +
+  ggtitle("Other households", sub = "Neither couples, lone occupants or single parents")
+```
+
+## Tables
+
+### Ethnicity
+
+```{r ethnicityTable}
+nice_table <- function(x, stat_name){
+  mutate(x, proportion = percent(proportion, 1)) |>
+    arrange(statistic) |> 
+    rename(!!stat_name := statistic) |> 
+    pivot_wider(names_from = area, values_from = proportion)
+}
+
+ethnicity_table <-
+  nice_table(ethnicity_neat, "Ethnicity")
+```
+
+### Age
+
+```{r ageTable}
+age_table_data <- 
+  rel[["age_five_year"]] |> 
+  neaten(
+    statistic =
+      str_replace_all(statistic, "_", " ") |> 
+      str_remove("age ") |> 
+      str_trim() |> 
+      str_replace("(?<=\\d) (?=\\d)", "-"),
+    statistic = replace(statistic, str_starts(statistic, "4 years"), "0-4"),
+    statistic = replace(statistic, str_starts(statistic, "85 years"), "85+"),
+    statistic = str_remove(statistic, " years"))
+
+detailed_age_table <- nice_table(age_table_data, "Age")
+age_table <- nice_table(age_neat, "Age")
+
+```
+
+### Health
+
+```{r healthTable}
+health_table <- nice_table(health_neat, "General health")
+```
+
+### Religion
+
+```{r religionTable}
+religion_table <- nice_table(religion_neat, "Religion")
+```
+
+### Household Tables
+
+```{r householdTables}
+hhold_table <- function(x){
+    mutate(x, statistic = str_replace_all(statistic, "\n", " ")) |>
+    nice_table("Household composition")
+}
+
+couples_table <- hhold_table(couples)
+loners_table <- hhold_table(loners)
+others_table <- hhold_table(others)
+
+all_hholds_table <- rbind(couples_table, loners_table, others_table)
+
+```
+
+## Save data
+
+```{r saveData}
+plots_tables_dir <- dir_create(here("plots-and-tables"))
+
+plots <- list(
+  age = age_bar,
+  ethnicity = ethnicity_bar,
+  general_health = health_bar,
+  religion = religion_bar,
+  household_composition = 
+    list(
+      loners = loners_bar,
+      couples = couples_bar,
+      others  = others_bar
+    ))
+
+tables <- list(
+  age = age_table,
+  age_five_year = detailed_age_table,
+  ethnicity = ethnicity_table,
+  general_health = health_table,
+  religion = religion_table,
+  household_composition = 
+    list(
+      loners = loners_table,
+      couples = couples_table,
+      others = others_table,
+      all    = all_hholds_table
+      ))
+
+plots_and_tables <- list(plots = plots, tables = tables)
+
+save_path <- str_c(plots_tables_dir, "/2023-09-11_st-phillip-upper-stratton.RDS")
+
+saveRDS(plots_and_tables, save_path)
+
+
+```
