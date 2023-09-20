@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
+
+## Big shapefiles
+civic-areas/*
+parish-shapes/*
+
+## Word documents
+*.docx
+
+## Random guff
+markdown-templates/*_cache
+markdown-templates/*_files
