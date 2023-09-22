@@ -283,35 +283,37 @@ intersecting_lsoa <-
 lsoa <- 
   filter(lsoa, intersecting_lsoa) |> 
   left_join(imd, by = "lsoa_2011_code")
+```
 
+```{r map_imd}
 imd_map <-
   ggmap(basemap) + 
+  
   geom_sf(data = lsoa,
           aes(fill = custom_label),
           colour = "black", linewidth = 0.8,
           inherit.aes = FALSE,
-          alpha = 0.7) +
-  # geom_sf_text(data = lsoa,
-  #              aes(label = imd_percentile),
-  #              colour = "gray30",
-  #              inherit.aes = FALSE) + 
+          alpha = 0.5) +
+  
   scale_fill_manual(name = "IMD Rank (England)",
                     values =
-                      colorRampPalette(c(ca_dark_teal(), "white"))(5)[1:4] |>
-                      c(NA),
-                    drop = FALSE,
-                    na.value = NA) + 
+                      colorRampPalette(c(ca_dark_teal(), "white"))(5),
+                    drop = FALSE) + 
+  
     geom_sf(data = shapes,
           aes(colour = parish_name),
           fill = NA, linewidth = 1.2,
           inherit.aes = FALSE) +
   scale_colour_manual(values = ca_orange(), name = "Parish") +
+  
   theme(
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank()
   ) +
+  
   ggtitle("Deprivation in both parishes") + 
+  
   labs(caption = "IMD 2019. Church Army's Research Unit (DL) 2023")
 
 ```

@@ -292,17 +292,15 @@ imd_map <-
           aes(fill = custom_label),
           colour = "black", linewidth = 0.8,
           inherit.aes = FALSE,
-          alpha = 0.7) +
+          alpha = 0.5) +
   # geom_sf_text(data = lsoa,
   #              aes(label = imd_percentile),
   #              colour = "gray30",
   #              inherit.aes = FALSE) + 
   scale_fill_manual(name = "IMD Rank (England)",
                     values =
-                      colorRampPalette(c(ca_dark_teal(), "white"))(5)[1:4] |>
-                      c(NA),
-                    drop = FALSE,
-                    na.value = NA) + 
+                      colorRampPalette(c(ca_dark_teal(), "white"))(5),
+                    drop = FALSE) + 
     geom_sf(data = shapes,
           aes(colour = parish_name),
           fill = NA, linewidth = 1.2,
