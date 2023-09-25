@@ -8,3 +8,12 @@ editor: visual
 ## Introduction 
 
 ## Libraries
+
+```{r libraries}
+library(fs)
+library(here)
+
+library(sf)
+library(ggplot2)
+library(dplyr)
+```
