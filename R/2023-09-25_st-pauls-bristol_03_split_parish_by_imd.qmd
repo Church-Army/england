@@ -46,7 +46,13 @@ imd <- vroom(here("small-area-stats", "imd_2019.csv"),
 ## Clean data
 
 ```{r clean_data}
-llsoa <- select(llsoa, lsoa_2011_code = LSOA11CD, lon = LONG, lat = LAT)
+oa <-
+  select(oa, oa_2021_code = OA21CD) |> 
+  filter(str_starts(oa_2021_code, "E"))
+
+llsoa <-
+  select(llsoa, lsoa_2011_code = LSOA11CD, lon = LONG, lat = LAT) |> 
+  filter(str_starts(lsoa_2011_code, "E"))
 
 english_imd <- 
   select(
