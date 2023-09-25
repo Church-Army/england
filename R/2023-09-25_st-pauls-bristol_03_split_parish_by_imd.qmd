@@ -17,3 +17,11 @@ library(sf)
 library(ggplot2)
 library(dplyr)
 ```
+
+## Load Data
+
+```{r load_data}
+# parish <- read_sf(here("parish-shapes", "coe-parishes.geojson"), )
+llsoa <- read_sf(here("civic-areas", "2011_lsoa-boundaries_england-and-wales_generalised-clipped"))
+oa <- read_sf(here("2021_oa-boundaries_england-wales_generalised_clipped"))
+```
