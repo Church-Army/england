@@ -61,7 +61,7 @@ english_imd <-
     imd_rank = `IndexofMultipleDeprivation(IMD) Rank`,
     imd_decile = `IndexofMultipleDeprivation(IMD)Decile` 
     ) |> 
-  filter(imd, str_starts(lsoa_2011_code, "E"))
+  filter(str_starts(lsoa_2011_code, "E"))
 
 rm(imd)
 ```
