@@ -38,14 +38,14 @@ oa <- read_sf(here("civic-areas",
 imd <- vroom(here("small-area-stats", "imd_2019.csv"))
 ```
 
-## Find intersecting LLSOA 
+## Find intersecting LLSOA
 
 ### Reproject parish shape
 
-We need to reproject `parish` so that it shares the same projection as `llsoa`. This will enable us to find those LLSOA that intersect the parish.
+We need to reproject `parish` using (`st_transform`) so that it shares the same projection as `llsoa`. This will enable us to find those LLSOA that intersect the parish.
 
 ```{r reproject_parish}
-
+parish <- st_transform(parish, crs = st_crs(llsoa))
 ```
 
 ### Find intersecting LLSOA
@@ -53,7 +53,11 @@ We need to reproject `parish` so that it shares the same projection as `llsoa`. 
 Use `st_intersects()` to determine which LLSOA intersect the parish
 
 ```{r find_intersecting_llsoa}
+intersecting_llsoa <-
+  st_intersects(llsoa, parish, sparse = FALSE) |> 
+  as.vector()
 
+llsoa <- filter(llsoa, intersecting_llsoa)
 ```
 
 ## Join IMD data to LLSOA
