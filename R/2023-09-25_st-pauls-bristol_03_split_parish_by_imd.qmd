@@ -93,5 +93,5 @@ Use `st_intersects()` to determine which LLSOA intersect the parish
 ```{r plot_llsoa_imd_and_code}
 ggplot(llsoa) +
   geom_sf(colour = "black", fill = "white") + 
-  geom_text_sf(aes(label = lsoa_2011_code))
+  geom_sf_text(aes(label = lsoa_2011_code))
 ```
