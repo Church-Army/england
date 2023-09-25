@@ -40,14 +40,23 @@ oa <- read_sf(here("civic-areas",
                    "2021_oa-boundaries_england-wales_generalised_clipped"))
 
 imd <- vroom(here("small-area-stats", "imd_2019.csv"),
-             col_types = "ccccii") |> 
+             col_types = "ccccii")
+```
+
+## Clean data
+
+```{r clean_data}
+llsoa <- select(llsoa, lsoa_2011_code = LSOA11CD, lon = LONG, lat = LAT)
+
+english_imd <- 
   select(
+    imd, 
     lsoa_2011_code = `LSOAcode(2011)`,
     imd_rank = `IndexofMultipleDeprivation(IMD) Rank`,
     imd_decile = `IndexofMultipleDeprivation(IMD)Decile` 
-    )
+    ) |> 
+  filter(imd, str_starts(lsoa_2011_code, "E"))
 
-english_imd <- filter(imd, str_starts(lsoa_2011_code, "E"))
 rm(imd)
 ```
 
@@ -76,5 +85,7 @@ Use `st_intersects()` to determine which LLSOA intersect the parish
 ## Plot LLSOA IMD and code
 
 ```{r plot_llsoa_imd_and_code}
-ggplot()
+ggplot(llsoa) +
+  geom_sf() + 
+  geom_text(aes(label = lsoa_2011_code))
 ```
