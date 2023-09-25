@@ -1,6 +1,6 @@
 ---
 title: "Splitting St Paul's Parish in Half"
-author: "Dave & Shiv"
+author: "Dave & Shiobhan"
 format: html
 editor: visual
 ---
