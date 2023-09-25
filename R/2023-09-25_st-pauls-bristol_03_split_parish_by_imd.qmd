@@ -10,13 +10,17 @@ editor: visual
 ## Libraries
 
 ```{r libraries}
+library(conflicted)
+
 library(fs)
 library(here)
 
 library(sf)
 library(ggplot2)
 library(dplyr)
+conflicted::conflicts_prefer(dplyr::filter)
 library(vroom)
+library(stringr)
 ```
 
 ## Load Data
@@ -35,10 +39,19 @@ llsoa <- read_sf(here("civic-areas",
 oa <- read_sf(here("civic-areas",
                    "2021_oa-boundaries_england-wales_generalised_clipped"))
 
-imd <- vroom(here("small-area-stats", "imd_2019.csv"))
+imd <- vroom(here("small-area-stats", "imd_2019.csv"),
+             col_types = "ccccii") |> 
+  select(
+    lsoa_2011_code = `LSOAcode(2011)`,
+    imd_rank = `IndexofMultipleDeprivation(IMD) Rank`,
+    imd_decile = `IndexofMultipleDeprivation(IMD)Decile` 
+    )
+
+english_imd <- filter(imd, str_starts(lsoa_2011_code, "E"))
+rm(imd)
 ```
 
-## Find intersecting LLSOA 
+## Find intersecting LLSOA
 
 ### Reproject parish shape
 
@@ -59,3 +72,9 @@ Use `st_intersects()` to determine which LLSOA intersect the parish
 ## Join IMD data to LLSOA
 
 `left_join()` IMD data to `llsoa` by LLSOA code
+
+## Plot LLSOA IMD and code
+
+```{r plot_llsoa_imd_and_code}
+ggplot()
+```
