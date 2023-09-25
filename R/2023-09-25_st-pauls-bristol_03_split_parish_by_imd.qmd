@@ -84,7 +84,20 @@ Use `st_intersects()` to determine which LLSOA intersect the parish
 
 ```
 
-## Join IMD data to LLSOA
+## Join IMD vigintiles to LLSOA
+
+### Create IMD vigintiles
+
+```{r create_imd_vigintiles}
+english_imd <- mutate(english_imd, imd_vigintile = ntile(imd_rank, 20))
+
+## Check that's worked:
+summarise(english_imd, .by = c(imd_decile, imd_vigintile)) |> 
+  arrange(imd_vigintile) |> 
+  head()
+```
+
+### Join vigintiles to LLSOA
 
 `left_join()` IMD data to `llsoa` by LLSOA code
 
