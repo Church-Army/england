@@ -28,3 +28,25 @@ oa <- read_sf(here("2021_oa-boundaries_england-wales_generalised_clipped"))
 
 imd <- vroom(here("small-area-stats", "imd_2019.csv"))
 ```
+
+## Find intersecting LLSOA 
+
+### Reproject parish shape
+
+We need to reproject `parish` so that it shares the same projection as `llsoa`. This will enable us to find those LLSOA that intersect the parish.
+
+```{r reproject_parish}
+
+```
+
+### Find intersecting LLSOA
+
+Use `st_intersects()` to determine which LLSOA intersect the parish
+
+```{r find_intersecting_llsoa}
+
+```
+
+## Join IMD data to LLSOA
+
+`left_join()` IMD data to `llsoa` by LLSOA code
