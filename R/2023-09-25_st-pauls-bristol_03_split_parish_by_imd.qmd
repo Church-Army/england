@@ -5,7 +5,7 @@ format: html
 editor: visual
 ---
 
-## Introduction 
+## Introduction
 
 ## Libraries
 
@@ -22,9 +22,18 @@ library(vroom)
 ## Load Data
 
 ```{r load_data}
-# parish <- read_sf(here("parish-shapes", "coe-parishes.geojson"), )
-llsoa <- read_sf(here("civic-areas", "2011_lsoa-boundaries_england-and-wales_generalised-clipped"))
-oa <- read_sf(here("2021_oa-boundaries_england-wales_generalised_clipped"))
+#| cache: true
+parish_query <-
+  "SELECT parish_code, parish_name FROM \"coe-parishes_2022\" WHERE parish_code = 550049"
+
+parish <- read_sf(here("parish-shapes", "coe-parishes_2022.geojson"),
+                  query = parish_query)
+
+llsoa <- read_sf(here("civic-areas",
+                      "2011_lsoa-boundaries_england-wales_generalised-clipped"))
+
+oa <- read_sf(here("civic-areas",
+                   "2021_oa-boundaries_england-wales_generalised_clipped"))
 
 imd <- vroom(here("small-area-stats", "imd_2019.csv"))
 ```
