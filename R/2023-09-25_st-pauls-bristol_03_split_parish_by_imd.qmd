@@ -16,6 +16,7 @@ library(here)
 library(sf)
 library(ggplot2)
 library(dplyr)
+library(vroom)
 ```
 
 ## Load Data
@@ -33,4 +34,6 @@ llsoa <- read_sf(here("civic-areas",
 
 oa <- read_sf(here("civic-areas",
                    "2021_oa-boundaries_england-wales_generalised_clipped"))
+
+imd <- vroom(here("small-area-stats", "imd_2019.csv"))
 ```
