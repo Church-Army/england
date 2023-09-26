@@ -186,3 +186,18 @@ llsoa <-
 
 glimpse(llsoa)
 ```
+
+### Quick plot
+
+```{r quick_plot}
+ggplot(llsoa) + 
+  geom_sf(aes(fill = south, geometry = intersection),
+          colour = ca_cyan()) + 
+  scale_fill_manual(values = c(`TRUE` = ca_dark_teal(), `FALSE` = ca_light_teal()))
+```
+
+## Save shapes
+
+```{r save_shapes}
+write_sf(llsoa, here("requested-areas", "2023-09-26_st-pauls-bristol-split.geojson"))
+```
