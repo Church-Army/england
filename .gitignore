@@ -12,6 +12,11 @@ parish-shapes/*
 ## Word documents
 *.docx
 
+## HTML files
+*.html
+
 ## Random guff
 markdown-templates/*_cache
 markdown-templates/*_files
+R/*_cache
+R/*_files
