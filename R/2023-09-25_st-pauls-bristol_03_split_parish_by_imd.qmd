@@ -1,3 +1,5 @@
+keep = NULL
+
 ---
 title: "Splitting St Paul's Parish in Half"
 author: "Dave & Shiobhan"
@@ -21,6 +23,7 @@ library(dplyr)
 conflicted::conflicts_prefer(dplyr::filter)
 library(vroom)
 library(stringr)
+library(carutools)
 ```
 
 ## Load Data
@@ -105,10 +108,57 @@ summarise(english_imd, .by = c(imd_decile, imd_vigintile)) |>
 
 `left_join()` IMD data to `llsoa` by LLSOA code
 
+```{r left join}
+llsoa <- 
+  left_join(
+  llsoa,
+  english_imd,
+  by = "lsoa_2011_code",
+  suffix = c(".llsoa", ".english_imd"))
+```
+
 ## Plot LLSOA IMD and code
+
+```{r mutate}
+
+llsoa <-
+  mutate(llsoa,
+         most_deprived_quintile = imd_decile <= 2
+         )
+```
+
 
 ```{r plot_llsoa_imd_and_code}
 ggplot(llsoa) +
-  geom_sf(colour = "black", fill = "white") + 
-  geom_sf_text(aes(label = lsoa_2011_code))
+  geom_sf(
+    aes(fill = most_deprived_quintile),
+    colour = "black"
+    ) + 
+  scale_fill_manual(
+    values = c(`TRUE` = ca_dark_teal(), `FALSE` = "white")
+    ) + 
+  geom_sf_text(aes(label = lsoa_2011_code), size = 2)
+
+
+
+```
+## Get North/South Split
+
+```{r get_n_s_split}
+llsoa <- 
+  mutate(
+    llsoa,
+    south = most_deprived_quintile | lsoa_2011_code == "E01033342"
+  )
+
+# test plot:
+ggplot(llsoa) +
+  geom_sf(
+    aes(fill = south),
+    colour = "black"
+    ) + 
+  scale_fill_manual(
+    values = c(`TRUE` = ca_dark_teal(), `FALSE` = "white")
+    )
+
 ```
