@@ -10,10 +10,12 @@ civic-areas/*
 parish-shapes/*
 
 ## Word documents
-**/*.docx
+R/*.docx
+markdown-templates/*.docx
 
 ## HTML files
-**/*.html
+R/*.html
+markdown-templates/*.docx
 
 ## Random guff
 markdown-templates/*_cache
