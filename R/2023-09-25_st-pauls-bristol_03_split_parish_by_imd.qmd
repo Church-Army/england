@@ -1,5 +1,3 @@
-keep = NULL
-
 ---
 title: "Splitting St Paul's Parish in Half"
 author: "Dave & Shiobhan"
@@ -121,9 +119,9 @@ ggplot(llsoa) +
     aes(fill = most_deprived_quintile),
     colour = "black"
     ) + 
-  scale_fill_manual(
-    values = c(`TRUE` = ca_dark_teal(), `FALSE` = "white")
-    ) + 
+  
+  scale_fill_manual(values = c(`TRUE` = ca_dark_teal(), `FALSE` = "white")) + 
+  
   geom_sf_text(aes(label = lsoa_2011_code), size = 2)
 
 
@@ -147,4 +145,44 @@ ggplot(llsoa) +
   scale_fill_manual(
     values = c(`TRUE` = ca_dark_teal(), `FALSE` = "white")
     )
+```
+
+## Find intersections
+
+### Get tibble of intersections with parish
+
+```{r find_intersections}
+intersections <-
+  st_intersection(llsoa, parish) |> 
+  select(lsoa_2011_code) |> 
+  rename(intersection = geometry)
+
+intersections <- mutate(intersections, intersecting_area = unclass(st_area(intersection)))
+
+ggplot(intersections) + 
+  geom_sf()
+```
+
+### Join LLSOA to intersection geometries
+
+```{r join_llsoa_to_intersection_geometries}
+
+llsoa <-
+  mutate(llsoa, llsoa_area = unclass(st_area(geometry))) |> 
+  as_tibble() |> 
+  select(-geometry)
+
+llsoa <- left_join(llsoa, intersections, by = "lsoa_2011_code")
+```
+
+### Calculate % of each LLSOA in Parish
+
+```{r percent_each_llsoa_in_parish}
+llsoa <- mutate(llsoa, llsoa_in_parish = intersecting_area / llsoa_area, .keep = "unused")
+
+llsoa <- 
+  mutate(llsoa, llsoa_in_parish = round(llsoa_in_parish, 6)) |> 
+  filter(llsoa_in_parish > 0)
+
+glimpse(llsoa)
 ```
