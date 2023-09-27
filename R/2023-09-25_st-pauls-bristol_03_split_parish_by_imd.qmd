@@ -112,7 +112,6 @@ llsoa <-
          )
 ```
 
-
 ```{r plot_llsoa_imd_and_code}
 ggplot(llsoa) +
   geom_sf(
@@ -127,6 +126,7 @@ ggplot(llsoa) +
 
 
 ```
+
 ## Get North/South Split
 
 ```{r get_n_s_split}
@@ -199,5 +199,9 @@ ggplot(llsoa) +
 ## Save shapes
 
 ```{r save_shapes}
-write_sf(llsoa, here("requested-areas", "2023-09-26_st-pauls-bristol-split.geojson"))
+st_write(
+  llsoa,
+  here("requested-areas", "2023-09-26_st-pauls-bristol-split.geojson"),
+  delete_dsn = TRUE
+  )
 ```

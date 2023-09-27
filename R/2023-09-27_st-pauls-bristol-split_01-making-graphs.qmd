@@ -1,0 +1,368 @@
+---
+title: "Jesus Shaped People: St Paul's, Bristol"
+author: "Dave"
+format: html
+editor: visual
+params: 
+  nation: "england"
+  diocese: "bristol"
+---
+
+## Housekeeping
+
+### Libraries
+
+```{r libs}
+#| output: false
+library(conflicted)
+
+library(fs)
+library(here)
+
+library(vroom)
+library(stringr)
+library(purrr)
+library(sf)
+library(dplyr)
+conflicted::conflicts_prefer(dplyr::filter)
+library(ggplot2)
+library(lobstr)
+library(tidyr)
+library(scales)
+library(forcats)
+library(carutools)
+```
+
+### Data, files and paths
+
+### Get shapes
+
+#### Get shapes for requested areas
+
+Read in both `.kml` files, then bind all three shapes into one `sf` object.
+
+```{r get_praish_shapes}
+requested_area <-
+  read_sf(
+    here("requested-areas", "2023-09-26_st-pauls-bristol-split.geojson")
+    )
+
+```
+
+#### Get shapes for small areas
+
+```{r getSmallAreaShapes}
+oa <-
+  read_sf(here("civic-areas", "2021_oa-boundaries_england-wales_generalised_clipped")) |> 
+  select(oa_2021_code = OA21CD)
+```
+
+#### Reproject requested shapes
+
+```{r reproject}
+requested_area <- st_transform(requested_area, st_crs(oa))
+```
+
+### Get statistics
+
+#### Get diocesan stats
+
+Get stats for `r params[["diocese"]]`
+
+```{r getDiocesanStats}
+
+stat_names <- c("age-five-year", "ethnicity", "general-health", "household-composition", "religion")
+
+diocesan_stats <- 
+  map(stat_names,
+      function(stat_name){
+        
+        file_name <- str_c(params[["nation"]], "_", stat_name, ".csv")
+        file_path <- here("diocesan-stats", file_name)
+        
+        vroom(file_path, show_col_types = FALSE) |> 
+          filter(diocese == str_to_title(params[["diocese"]])) |> 
+          select(-diocese)
+      })
+
+names(diocesan_stats) <- str_replace_all(stat_names, "-", "_")
+```
+
+#### Get national stats
+
+```{r getNationalStats}
+oa_stats <- 
+  map(stat_names,
+      function(stat_name){
+        
+        file_name <- str_c("england-wales_", stat_name, "_oa_2021.RDS")
+        file_path <- here("small-area-stats", file_name)
+        
+        readRDS(file_path)
+      })
+
+names(oa_stats) <- str_replace_all(stat_names, "-", "_")
+
+## NB: about 5 'general-health' stats contain NA values for the
+## whole of England. This stops those from making this crash.
+oa_stats$general_health |>
+  filter(if_any(where(is.numeric), is.na))
+
+national_stats <- 
+  map(oa_stats, 
+      \(x){
+        filter(x, if_all(where(is.numeric), negate(is.na))) |> 
+        summarise(across(where(is.numeric), sum))
+        })
+```
+
+## Format Data
+
+### Match OA to LLSOA
+
+LLSOA are comprised of OA. Lets:
+
+-   Get the union of the parish
+
+-   Find all OA that intersect the union
+
+-   Get respective unions of the North and South of the parish
+
+-   Match OA to N/S on the basis of contained centroids
+
+### Filter intersecting civic areas
+
+We only need to deal with output areas that intersect the shapes we're analysing.
+
+```{r filterOA}
+request_union <- st_union(requested_area)
+
+intersecting_oa <-
+  st_intersects(oa, request_union, sparse = FALSE) |> 
+  as.vector()
+
+oa <- filter(oa, intersecting_oa)
+oa <- mutate(oa, oa_area = as.vector(st_area(geometry)))
+nrow(oa)
+
+ggplot(oa) + 
+  
+  geom_sf(fill = ca_cyan(), alpha = 0.5, colour = "black") + 
+  
+  geom_sf(data = requested_area,
+          aes(fill = south),
+          colour = ca_purple(),
+          alpha = 0.7)
+```
+
+Great, that looks like a centroid-belonging join will work.
+
+### Get intersections and centroids
+
+We can use the centroids of intersected areas to determine whether an oa belongs to the North or the South
+
+```{r get_centroids}
+oa_llsoa_intersection <- st_intersection(oa, requested_area)
+
+oa_intersection_centroids <- st_centroid(oa_llsoa_intersection)
+
+ggplot(requested_area) + 
+  geom_sf(fill = ca_cyan(), colour = "black", alpha = 0.6) + 
+  geom_sf(data = oa_intersection_centroids, colour = ca_gold())
+```
+
+### Make N/S unions
+
+```{r n_s_unions}
+north_south <- 
+  group_by(requested_area, south) |> 
+  summarise()
+```
+
+### Find respective distances of each OA from N/S
+
+```{r find_distance_to_n_s}
+which_ordinal <- if_else(north_south[["south"]], "south", "north")
+n_s_distances <- st_distance(oa_intersection_centroids, north_south)
+colnames(n_s_distances) <- which_ordinal
+
+head(n_s_distances)
+
+north_or_south <-
+  apply(n_s_distances, 1, \(x) which_ordinal[x == min(x)]) |> 
+  unlist()
+
+oa_intersection_centroids <-
+  mutate(oa_intersection_centroids,
+         north_or_south = north_or_south)
+```
+
+### Assign ordinal category to each OA
+
+```{r assign_oa_ordinals}
+oa_intersection_centroids <- 
+  as_tibble(oa_intersection_centroids) |>
+  select(oa_2021_code, north_or_south)
+
+oa <-
+  left_join(oa, oa_intersection_centroids, by = "oa_2021_code") |> 
+  mutate(north_or_south = factor(north_or_south))
+
+ggplot(oa, aes(fill = north_or_south)) + 
+  geom_sf()
+
+st_intersection(oa, request_union) |> 
+  ggplot(aes(fill = north_or_south)) + 
+  geom_sf()
+
+
+```
+
+## Get OA intersections
+
+```{r get_oa_intersections}
+oa_intersections <- st_intersection(oa, request_union)
+
+oa_intersections <- mutate(oa_intersections, area = as.vector(st_area(geometry)))
+
+oa_intersections <- mutate(oa_intersections, oa_in_area = as.vector(area/oa_area), .keep = "unused")
+```
+### Save shape data
+
+```{r saveShapeData}
+respective_unions <- 
+  requested_area |> 
+  group_by(south) |> 
+  summarise()
+
+grd <- dir_create(here("geospatial-reporting-data"))
+hayes <- dir_create(grd, "st-phillip-upper-stratton_2023-09-11")
+
+## using this because write_sf appears to be borked
+st_write(oa_intersections, here(hayes, "st-pauls-bristol-split_oa.geojson"),
+         delete_dsn = TRUE)
+
+st_write(respective_unions, here(hayes, "st-pauls-bristol-split.geojson"),
+         delete_dsn = TRUE)
+```
+## Calculate statistics
+
+### Format requested shapes as list
+
+```{r calculateStats}
+requested_area <- group_by(oa_intersections, north_or_south)
+
+shape_keys <-
+  group_keys(requested_area) |> 
+  unlist()
+
+request_list <- 
+  group_split(requested_area) |> 
+  set_names(shape_keys)
+
+rm(shape_keys)
+
+lobstr::tree(request_list, max_depth = 1)
+```
+
+### Map across shapes & stats
+
+```{r mapShapesStats}
+requested_area_stats <- 
+  map(request_list,
+    function(x){
+      map(oa_stats, 
+          function(y){
+            left_join(x, y, by = "oa_2021_code") |> 
+              as_tibble() |> 
+              select(-geometry) |> 
+              mutate(across(where(is.numeric), \(a) a * oa_in_area)) |> 
+              select(-oa_in_area) |> 
+              summarise(across(where(is.numeric), sum))
+          })
+    })
+
+lobstr::tree(requested_area_stats, max_depth = 2)
+```
+
+### Combine all areas
+
+```{r combineAllAreas}
+all_areas <- c(requested_area_stats,
+               list(diocese = diocesan_stats),
+               list(nation  = national_stats))
+
+lobstr::tree(all_areas, max_depth = 2)
+
+cool_crs <- 
+
+all_areas <- 
+  imap(all_areas,
+     \(area_list, area_name){
+       map(area_list,
+           \(x){
+             neat_area_name <- str_to_lower(area_name)
+             
+             mutate(x, area = neat_area_name) |> 
+               relocate(area)
+             }) })
+
+### Parrallel-map across each list item, reducing their elements into a single tibble
+all_areas <- pmap(all_areas, \(...) reduce(list(...), rbind))
+
+all_areas <- map(all_areas,
+                 \(x){
+                   mutate(x, area =
+                            ordered(area) |> 
+                            fct_inorder())
+                 })
+```
+
+### Transform data
+
+#### Make percentages
+
+```{r makePercentages}
+all_areas_abs <- all_areas
+all_areas_rel <-
+  map(all_areas,
+      \(x){
+        rowwise(x) |> 
+          mutate(across(
+            where(is.numeric),
+            \(a) a / sum(c_across(where(is.numeric)))
+            ))
+      })
+
+all_areas[[1]][1:4]
+rowSums(all_areas[[1]][,-1])
+```
+
+#### Pivot Longer
+
+```{r pivotLonger}
+all_areas_rel <- map(all_areas_rel,
+                 \(x){
+                   pivot_longer(x,
+                                cols = -area, 
+                                names_to = "statistic", 
+                                values_to = "proportion")
+                   })
+
+all_areas_abs <- map(all_areas_abs,
+                 \(x){
+                   pivot_longer(x,
+                                cols = -area, 
+                                names_to = "statistic", 
+                                values_to = "proportion")
+                   })
+```
+
+## Save data
+
+```{r saveData}
+save_dir <- dir_create(here("comparative-tables"))
+
+saveRDS(all_areas_rel, here(save_dir, "2023-09-27_st-pauls-bristol-split_proportions.RDS"))
+saveRDS(all_areas_abs, here(save_dir, "2023-09-27_st-pauls-bristol-split_population.RDS"))
+```
