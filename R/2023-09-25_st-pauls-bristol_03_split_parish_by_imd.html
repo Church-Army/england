@@ -131,7 +131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
-<div class="cell" data-hash="2023-09-25_st-pauls-bristol_03_split_parish_by_imd_cache/html/load_data_1e7cc4f1adb4c89e048c5fc732b18605">
+<div class="cell" data-hash="2023-09-25_st-pauls-bristol_03_split_parish_by_imd_cache/html/load_data_48ee440c131ca1456d1e1bfac5f9a2de">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>parish_query <span class="ot">&lt;-</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SELECT parish_code, parish_name FROM </span><span class="sc">\"</span><span class="st">coe-parishes_2022</span><span class="sc">\"</span><span class="st"> WHERE parish_code = 550049"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -139,7 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">query =</span> parish_query)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>llsoa <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">here</span>(<span class="st">"civic-areas"</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"2011_lsoa-boundaries_england-wales_generalised-clipped"</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"2011_lsoa-boundaries_england-wales_full_clipped"</span>))</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>oa <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">here</span>(<span class="st">"civic-areas"</span>,</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"2021_oa-boundaries_england-wales_generalised_clipped"</span>))</span>
@@ -156,7 +156,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_starts</span>(oa_2021_code, <span class="st">"E"</span>))</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>llsoa <span class="ot">&lt;-</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(llsoa, <span class="at">lsoa_2011_code =</span> LSOA11CD, <span class="at">lon =</span> LONG, <span class="at">lat =</span> LAT) <span class="sc">|&gt;</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(llsoa, <span class="at">lsoa_2011_code =</span> LSOA11CD) <span class="sc">|&gt;</span> </span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_starts</span>(lsoa_2011_code, <span class="st">"E"</span>))</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>english_imd <span class="ot">&lt;-</span> </span>
@@ -233,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>llsoa <span class="ot">&lt;-</span> </span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    llsoa,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">south =</span> most_deprived_quintile <span class="sc">|</span> lsoa_2011_code <span class="sc">==</span> <span class="st">"E01033342"</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">south =</span> most_deprived_quintile <span class="sc">|</span> lsoa_2011_code <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"E01033342"</span>, <span class="st">"E01014540"</span>)</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># test plot:</span></span>
@@ -294,17 +294,15 @@ all geometries</code></pre>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(llsoa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 17
-Columns: 9
+<pre><code>Rows: 18
+Columns: 7
 $ lsoa_2011_code         &lt;chr&gt; "E01014485", "E01014486", "E01014488", "E010144…
-$ lon                    &lt;dbl&gt; -2.57683, -2.57835, -2.58161, -2.58659, -2.5800…
-$ lat                    &lt;dbl&gt; 51.47015, 51.46520, 51.46908, 51.46585, 51.4732…
-$ imd_rank               &lt;int&gt; 12992, 3573, 11617, 5787, 21380, 26948, 4274, 1…
-$ imd_decile             &lt;int&gt; 4, 2, 4, 2, 7, 9, 2, 1, 1, 3, 5, 4, 2, 2, 1, 1,…
-$ most_deprived_quintile &lt;lgl&gt; FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, T…
+$ imd_rank               &lt;int&gt; 12992, 3573, 11617, 5787, 21380, 26948, 12154, …
+$ imd_decile             &lt;int&gt; 4, 2, 4, 2, 7, 9, 4, 2, 1, 1, 3, 5, 4, 2, 2, 1,…
+$ most_deprived_quintile &lt;lgl&gt; FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, …
 $ south                  &lt;lgl&gt; FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, T…
-$ intersection           &lt;POLYGON [m]&gt; POLYGON ((360501.1 174496.1..., POLYGON…
-$ llsoa_in_parish        &lt;dbl&gt; 1.000000, 1.000000, 0.386728, 0.657151, 0.59807…</code></pre>
+$ intersection           &lt;GEOMETRY [m]&gt; POLYGON ((360500.7 174751.4..., POLYGO…
+$ llsoa_in_parish        &lt;dbl&gt; 0.999976, 1.000000, 0.469286, 0.700812, 0.53621…</code></pre>
 </div>
 </div>
 </section>
@@ -325,6 +323,11 @@ $ llsoa_in_parish        &lt;dbl&gt; 1.000000, 1.000000, 0.386728, 0.657151, 0.5
 <h2 class="anchored" data-anchor-id="save-shapes">Save shapes</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(llsoa, <span class="fu">here</span>(<span class="st">"requested-areas"</span>, <span class="st">"2023-09-26_st-pauls-bristol-split.geojson"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in CPL_write_ogr(obj, dsn, layer, driver,
+as.character(dataset_options), : GDAL Error 6: DeleteLayer() not supported by
+this dataset.</code></pre>
+</div>
 </div>
 </section>
 

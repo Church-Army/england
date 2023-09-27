@@ -35,7 +35,7 @@ parish <- read_sf(here("parish-shapes", "coe-parishes_2022.geojson"),
                   query = parish_query)
 
 llsoa <- read_sf(here("civic-areas",
-                      "2011_lsoa-boundaries_england-wales_full-clipped"))
+                      "2011_lsoa-boundaries_england-wales_full_clipped"))
 
 oa <- read_sf(here("civic-areas",
                    "2021_oa-boundaries_england-wales_generalised_clipped"))
@@ -52,7 +52,7 @@ oa <-
   filter(str_starts(oa_2021_code, "E"))
 
 llsoa <-
-  select(llsoa, lsoa_2011_code = LSOA11CD, lon = LONG, lat = LAT) |> 
+  select(llsoa, lsoa_2011_code = LSOA11CD) |> 
   filter(str_starts(lsoa_2011_code, "E"))
 
 english_imd <- 
@@ -133,7 +133,7 @@ ggplot(llsoa) +
 llsoa <- 
   mutate(
     llsoa,
-    south = most_deprived_quintile | lsoa_2011_code == "E01033342"
+    south = most_deprived_quintile | lsoa_2011_code %in% c("E01033342", "E01014540")
   )
 
 # test plot:
