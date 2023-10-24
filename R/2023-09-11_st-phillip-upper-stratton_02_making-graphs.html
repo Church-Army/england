@@ -230,14 +230,14 @@ Attaching package: 'dplyr'</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
 # Groups:   area [1]
-  area             sub_group proportion numbers  
-  &lt;ord&gt;                &lt;dbl&gt;      &lt;dbl&gt; &lt;list&gt;   
-1 Penhill St Peter         1     0.236  &lt;chr [5]&gt;
-2 Penhill St Peter         2     0.181  &lt;chr [6]&gt;
-3 Penhill St Peter         3     0.201  &lt;chr [6]&gt;
-4 Penhill St Peter         4     0.191  &lt;chr [6]&gt;
-5 Penhill St Peter         5     0.133  &lt;chr [6]&gt;
-6 Penhill St Peter         6     0.0581 &lt;chr [5]&gt;</code></pre>
+  area                     sub_group proportion numbers  
+  &lt;ord&gt;                        &lt;dbl&gt;      &lt;dbl&gt; &lt;list&gt;   
+1 Upper Stratton St Philip         1      0.160 &lt;chr [5]&gt;
+2 Upper Stratton St Philip         2      0.158 &lt;chr [6]&gt;
+3 Upper Stratton St Philip         3      0.189 &lt;chr [6]&gt;
+4 Upper Stratton St Philip         4      0.219 &lt;chr [6]&gt;
+5 Upper Stratton St Philip         5      0.170 &lt;chr [6]&gt;
+6 Upper Stratton St Philip         6      0.105 &lt;chr [5]&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>age_neat <span class="ot">&lt;-</span> </span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>(age_neat) <span class="sc">|&gt;</span> </span>
@@ -253,14 +253,14 @@ Attaching package: 'dplyr'</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
 # Rowwise:  area
-  area             sub_group proportion numbers   statistic
-  &lt;ord&gt;                &lt;dbl&gt;      &lt;dbl&gt; &lt;list&gt;    &lt;chr&gt;    
-1 Penhill St Peter         1     0.236  &lt;chr [5]&gt; 0-14     
-2 Penhill St Peter         2     0.181  &lt;chr [6]&gt; 15-29    
-3 Penhill St Peter         3     0.201  &lt;chr [6]&gt; 30-44    
-4 Penhill St Peter         4     0.191  &lt;chr [6]&gt; 45-59    
-5 Penhill St Peter         5     0.133  &lt;chr [6]&gt; 60-74    
-6 Penhill St Peter         6     0.0581 &lt;chr [5]&gt; 75+      </code></pre>
+  area                     sub_group proportion numbers   statistic
+  &lt;ord&gt;                        &lt;dbl&gt;      &lt;dbl&gt; &lt;list&gt;    &lt;chr&gt;    
+1 Upper Stratton St Philip         1      0.160 &lt;chr [5]&gt; 0-14     
+2 Upper Stratton St Philip         2      0.158 &lt;chr [6]&gt; 15-29    
+3 Upper Stratton St Philip         3      0.189 &lt;chr [6]&gt; 30-44    
+4 Upper Stratton St Philip         4      0.219 &lt;chr [6]&gt; 45-59    
+5 Upper Stratton St Philip         5      0.170 &lt;chr [6]&gt; 60-74    
+6 Upper Stratton St Philip         6      0.105 &lt;chr [5]&gt; 75+      </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>age_neat <span class="ot">&lt;-</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>(age_neat) <span class="sc">|&gt;</span> </span>

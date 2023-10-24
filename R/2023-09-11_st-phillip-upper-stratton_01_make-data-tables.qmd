@@ -41,7 +41,7 @@ Read in both `.kml` files, then bind all three shapes into one `sf` object.
 ```{r get_praish_shapes}
 requested_area <- read_sf(
   here("parish-shapes", "coe-parishes_2022.geojson"),
-  query = "SELECT parish_code, parish_name FROM \"coe-parishes_2022\" WHERE parish_code = 550168")
+  query = "SELECT parish_code, parish_name FROM \"coe-parishes_2022\" WHERE parish_code = 550186")
 
 ```
 

@@ -43,7 +43,7 @@ In this report, the statistical profile of the parish will be compared to that o
 
 ```{r areaMap}
 #| fig-width: 6
-#| cache: true
+#| cache: false
 #| include: false
 
 shapes <- read_sf(here("geospatial-reporting-data", 
@@ -228,9 +228,7 @@ tables[["household_composition"]][["others"]] |>
 
 ## Deprivation
 
-Overall deprivation in both parishes is high. Both parishes contain neighborhoods that are classified as being in the 10% most neighborhoods of the UK. Figure 9 shows the intersection of regional deprivation with the parish and the estates.
-
-Deprivation scores are from the 2019 Index of Multiple Deprivation (IMD), which compares and ranks lower-layer super output areas across England and Wales on the basis of multiple weighted indices of deprivation, including income, employment, education and health. For more information on the 2019 IMD, see [this infographic](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/833959/IoD2019_Infographic.pdf).
+Figure 9 shows the intersection of regional deprivation with the parish and the estates. Deprivation scores are from the 2019 Index of Multiple Deprivation (IMD), which compares and ranks lower-layer super output areas across England and Wales on the basis of multiple weighted indices of deprivation, including income, employment, education and health. For more information on the 2019 IMD, see [this infographic](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/833959/IoD2019_Infographic.pdf).
 
 ```{r loadLsoa}
 #| include: false
